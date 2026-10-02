@@ -1,10 +1,16 @@
 # Logic Calculator
 
 A handheld, Arduino-based multi-mode calculator with a custom 3D-printed enclosure designed in SolidWorks.
-It runs on an Arduino UNO with a 16x2 LCD and a 5x4 keypad, and includes basic and scientific calculation,
-unit and currency converters, and a small math game.
+Built as a team project for the **Digital Logic Design** course at the Egyptian Chinese University (ECU),
+Faculty of Computer & Information Systems.
 
 ![Final device](images/final-device.jpg)
+
+## Motivation
+
+Branded scientific calculators in Egypt now cost roughly 1,000-2,000 EGP. The goal of this project was to build a
+calculator from simple, low-cost components (target: under 600 EGP) that covers most of the functions of a regular
+scientific calculator, plus a few extra ideas of our own (currency converter and a math game).
 
 ## Features
 
@@ -19,15 +25,16 @@ unit and currency converters, and a small math game.
 ## Hardware
 
 - Arduino UNO R3
-- 16x2 character LCD (parallel, 4-bit mode, no I2C)
+- 16x2 character LCD (parallel interface, no I2C)
 - 5x4 membrane keypad (20 keys)
-- Potentiometer (knob on the side of the case, LCD contrast)
+- 10 kOhm potentiometer (LCD contrast, knob on the side of the case)
+- 220 Ohm resistor for the LCD backlight
 - 2 x 18650 Li-ion cells (3.7 V, 3800 mAh) with holders
-- 3D-printed enclosure (designed in SolidWorks)
+- 3D-printed enclosure (PLA)
 
 ## Pin mapping
 
-**LCD** (`LiquidCrystal`)
+**LCD** (`LiquidCrystal`, 4-bit mode)
 
 | LCD pin | Arduino pin |
 |---------|-------------|
@@ -37,6 +44,15 @@ unit and currency converters, and a small math game.
 | D5 | 4 |
 | D6 | 3 |
 | D7 | 2 |
+
+**LCD power and contrast**
+
+| LCD pin | Connection |
+|---------|------------|
+| VSS, RW, K | GND |
+| VDD | 5V |
+| VO | Potentiometer middle pin (outer pins to 5V and GND) |
+| A | 5V through a 220 Ohm resistor |
 
 **Keypad** (`Keypad`)
 
@@ -76,7 +92,10 @@ unit and currency converters, and a small math game.
 
 Serial output at 9600 baud prints debug messages (pressed keys, current expression).
 
-## Enclosure design (SolidWorks)
+## Mechanical design
+
+The enclosure was modeled in SolidWorks, sized to hold the Arduino, batteries, LCD and keypad,
+then printed in PLA on a 3D printer.
 
 | | |
 |---|---|
@@ -87,6 +106,12 @@ Serial output at 9600 baud prints debug messages (pressed keys, current expressi
 
 ![Wiring and assembly](images/build-wiring.jpg)
 
+## Challenges
+
+Some keys on the 5x4 keypad triggered the wrong functions, which confused the calculator's operations.
+This was solved by handling each key explicitly in code with `if` statements, so the same key can have
+different jobs depending on the active mode.
+
 ## Known issues
 
 - **Power operator is not reachable.** `^` is handled by the evaluator, but `powerMode` is never set to `true`,
@@ -94,6 +119,12 @@ Serial output at 9600 baud prints debug messages (pressed keys, current expressi
 - **No operator precedence.** Expressions are evaluated left to right (e.g. `2 + 3 x 4` gives 20).
 - **Currency rates are hardcoded** in `convertCurrency()` and need manual updates.
 - **Long expressions overflow** the 16-character LCD line.
+
+## Future work
+
+- Voice command input, with accessibility for visually impaired users.
+- Cloud sync of history and settings, plus a mobile version with offline currency conversion.
+- AI-based math help and a learning mode with personalized quizzes.
 
 ## Project structure
 
@@ -105,6 +136,7 @@ Logic-Calculator/
 `-- .gitignore
 ```
 
-## Author
+## Team
 
-Noura Maher Elamin - Computer & Information Systems, Egyptian Chinese University
+Team project, Digital Logic Design, Faculty of Computer & Information Systems, Egyptian Chinese University (ECU).
+Contributor: Noura Maher Elamin.
